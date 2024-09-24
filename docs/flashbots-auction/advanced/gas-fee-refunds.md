@@ -76,7 +76,7 @@ Bundles sent by the same signer will be treated as non-competitive.
 - **$B(T)$** is the most profitable block produced from bundles in $T$.
 - **$v(T)$** is the value of $B(T)$.
 - **$b_i(T)$** is the payment of all bundles sent by identity $i$ if block $B(T)$ is realized.
-- **$\mu_i(T) = \min\{b_i(T), v(T) - v(T \setminus \{i\})\}$** is the marginal contribution of all bundles sent by identity $i$ if $B(T)$ is realized. We bound the marginal contribution so that the net payment can't be negative.
+- **$\mu_i(T) = \min\{b_i(T), v(T) - v(T \setminus \{i\})\}$** is the _eligible contribution_ of all bundles sent by identity $i$ if $B(T)$ is realized. We refer to $v(T) - v(T \setminus \{i\})\}$ simply as the _contribution_. We bound the contribution by the payment so that the net payment from searcher to builder can't be negative.
 - **$c$** is the amount the builder pays to the proposer to win the block.
   
 $$
@@ -85,11 +85,11 @@ $$
 
 So the net payment per identity (assuming it's included) is $p_i(T) = b_i(B(T)) - \phi_i(T, c)$.
 
-Notice that if the block generates enough value after paying the proposer, everyone should be refunded their contribution, meaning everyone pays the minimum they need to pay to beat competition. 
+Notice that if the block generates enough value after paying the proposer, everyone should be refunded their _eligible contribution_, meaning everyone pays the minimum they need to pay to beat competition. 
 
 ### Identity constraint
 
-To avoid the rule being gamed by submitting bundles from multiple identities, we impose an additional constraint that no set of identities can receive in total more refunds than they contribute to the block.
+To avoid the rule being gamed by submitting bundles from multiple identities, we impose an additional constraint that no set of identities can receive in total more refunds than they contribute value to the block.
 
 For each set of identities $I$ we define
 
@@ -97,7 +97,7 @@ $$
 \mu_I(T) = \min\{\sum_{i\in I} b_i(T), v(T) - v(T \setminus I)\},
 $$
 
-to be the joint marginal contribution of the identities in $I$ to the block. Then we choose rebates that are minimally different from the flat-tax rule subject to the constraint that they don't rebate a set of bundles more in total than its joint marginal contribution. This means the vector of rebates $\psi(T, c)$ solves
+to be the _joint eligible contribution_ of the identities in $I$ to the block. Then we choose rebates that are minimally different from the flat-tax rule subject to the constraint that they don't rebate a set of bundles more in total than its joint eligible contribution. This means the vector of rebates $\psi(T, c)$ solves
 
 $$
 \min_{r\in\mathbb{R}^n_+} \sum_i (r_i - \phi_i(T, c))^2
@@ -112,6 +112,8 @@ $$
 $$
 
 where $\phi(T, c)$ are the orginal flat-tax rebates as defined above.
+
+Note, that this is the rule we try to implement, but due to the computational overhead this would necessitate, we use a heuristic approach instead, the implementation of which can be found [here](https://github.com/flashbots/rbuilder/blob/00602cc9b97173000afcf78047a72667a3a67cb1/crates/rbuilder/src/backtest/redistribute/mod.rs#L553). 
 
 ## Who receives refunds
 
