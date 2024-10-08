@@ -111,7 +111,7 @@ $$
 \sum_i r_i \leq v(T) - c
 $$
 
-where $\phi(T, c)$ are the orginal flat-tax rebates as defined above.
+where $\phi(T, c)$ are the orginal flat-tax rebates as defined above. Due to computational overheads, this is implemented as an evolving heuristic. The current implementation is a pairwise check instead of considering all subsets.
 
 ## Who receives refunds
 
